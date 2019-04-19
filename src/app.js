@@ -8,14 +8,15 @@ import path from 'path'
 import MainRoutes from './routes/main-routes'
 import ErrorRoutesCatch from './middleware/ErrorRoutesCatch'
 import ErrorRoutes from './routes/error-routes'
-import jwt from 'koa-jwt'
-import fs from 'fs'
+// import Sequelize from './lib/sequelize'
+// import jwt from 'koa-jwt'
+// import fs from 'fs'
 // import PluginLoader from './lib/PluginLoader'
 
 const app = new Koa2()
 const env = process.env.NODE_ENV || 'development' // Current mode
 
-const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
+// const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
 
 app
   .use((ctx, next) => {
@@ -31,7 +32,7 @@ app
   })
   .use(ErrorRoutesCatch())
   .use(KoaStatic('assets', path.resolve(__dirname, '../assets'))) // Static resource
-  .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/assets/] }))
+  // .use(jwt({ secret: publicKey }).unless({ path: [/^\/public|\/user\/login|\/assets/] }))
   .use(KoaBody({
     multipart: true,
     parsedMethods: ['POST', 'PUT', 'PATCH', 'GET', 'HEAD', 'DELETE'], // parse GET, HEAD, DELETE requests
@@ -60,5 +61,14 @@ if (env === 'development') { // logger
 app.listen(SystemConfig.API_server_port)
 
 console.log('Now start API server on port ' + SystemConfig.API_server_port + '...')
+
+// Sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log('Connection has been established successfully.')
+//   })
+//   .catch(err => {
+//     console.error('Unable to connect to the database:', err)
+//   })
 
 export default app
